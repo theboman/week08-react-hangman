@@ -12,4 +12,5 @@ perhaps the words can be coming from a crossword puzzle api?
 
 ## possiable other features
 
--[ ] click and show definition of word? -[ ] show simular meaning words? Theasauras?...
+- [ ] click and show definition of word?
+- [ ] show simular meaning words? Theasauras?...

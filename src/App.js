@@ -80,9 +80,53 @@ export default function App() {
   return (
     <div className="App">
       <div className="game_box">
-        <div className="hangman">
+        <div className="game">
           hangman {currentWord}
           <div className="score">score: {score}</div>
+          <svg className="hangman" viewBox="-50 -8 240 160">
+            <g
+              id="body"
+              transform="
+                translate(64 18)
+                scale(.95)"
+            >
+              <circle id="head" cx="35.83" cy="12.5" r="12" />
+
+              <line id="body" x1="32.34" y1="23.62" x2="32.34" y2="74.62" />
+              <line id="left_arm" x1="32.34" y1="39.62" x2="0.34" y2="69.62" />
+
+              <line
+                id="right_arm"
+                x1="32.34"
+                y1="39.62"
+                x2="64.34"
+                y2="69.62"
+              />
+              <line
+                id="right_leg"
+                x1="32.34"
+                y1="74.62"
+                x2="54.34"
+                y2="119.62"
+              />
+              <line
+                id="left_leg"
+                x1="32.34"
+                y1="74.62"
+                x2="10.34"
+                y2="119.62"
+              />
+            </g>
+
+            <g className="gallow">
+              <line className="cls-1" x1="96" y1="17" x2="96" y2="1" />
+              <line className="cls-1" x1="25" y1="1" x2="97" y2="1" />
+              <line className="cls-1" x1="26" y1="1" x2="26" y2="147" />
+              <line className="cls-2" x1="43" y1="1" x2="26" y2="17" />
+              <line className="cls-1" y1="147" x2="135" y2="147" />
+              <line className="cls-2" x1="39" y1="1" x2="26" y2="13" />
+            </g>
+          </svg>
         </div>
         <div className="clue">
           "I am thinking of a word that is {currentWord.length} letters long."

@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
+//import Body from "./components/Body";
 import "./styles.css";
+import { motion } from 'framer-motion';
+
+
 
 export default function App() {
   const [input, setInput] = useState("");
@@ -14,11 +18,11 @@ export default function App() {
   const [guessed, setGuessed] = useState([]); //guessed letters
   const [currentWord, setCurrentWord] = useState(""); //holds the computers word
   const [currentWordArray, setCurrentWordArray] = useState([]); // holds the converted string to array.
-  const [currentCorrectLetters, setCurrentCorrectLetters] = useState([]); //will hold the correct gessed letters
+  const [currentCorrectLetters, setCurrentCorrectLetters] = useState([]); //will hold the correct gussed letters
   const [score, setScore] = useState(0);
+  const [showhangman, setShowhangman] = useState([]); //show the different parts of the hangman SVG
 
   useEffect(() => {
-    //console.log("1st");
 
     if (currentWord.length > 1) {
       build_underscores(currentWord);
@@ -29,7 +33,7 @@ export default function App() {
 
   //this will randomly chose a word from the word bank
   function chooseWord(wordbank) {
-    // random number of array length
+    // random number from array length 
     let randomNum = Math.floor(Math.random() * wordbank.length);
     let tempWord = wordbank[randomNum];
     let tempArray = tempWord.split("");
@@ -59,6 +63,7 @@ export default function App() {
     let numOfMatch = 0;
     tempArray = [...currentCorrectLetters];
 
+    //check the current word for matches, even if more than one
     currentWordArray.forEach((myLetter, index) => {
       if (current_guess === myLetter) {
         // console.log(myLetter + " is at: " + index);
@@ -67,56 +72,46 @@ export default function App() {
       }
     });
 
+    //setting the score with wrong guess
     if (numOfMatch === 0) {
       setScore(score + 1);
+      //add an element to the hang array to how body parts 1-6
+      //doesn't matter what you add to this array
+      let newHangArray = [...showhangman];
+      newHangArray.push(current_guess);
+      setShowhangman(newHangArray);
+
     }
 
+    // set the display to show the correct letter
+    // and set the display of the guessed letters
     setCurrentCorrectLetters(tempArray);
     let newGuess = [...guessed];
     newGuess.push(current_guess);
     setGuessed(newGuess);
   }
 
+  const bodyVariants = {
+    init: { pathLength: 0 },
+    anim: { pathLength: 1 }
+  }
+
   return (
     <div className="App">
       <div className="game_box">
         <div className="game">
-          hangman {currentWord}
+          hangman: {currentWord}
           <div className="score">score: {score}</div>
           <svg className="hangman" viewBox="-50 -8 240 160">
-            <g
-              id="body"
-              transform="
-                translate(64 18)
-                scale(.95)"
-            >
-              <circle id="head" cx="35.83" cy="12.5" r="12" />
-
-              <line id="body" x1="32.34" y1="23.62" x2="32.34" y2="74.62" />
-              <line id="left_arm" x1="32.34" y1="39.62" x2="0.34" y2="69.62" />
-
-              <line
-                id="right_arm"
-                x1="32.34"
-                y1="39.62"
-                x2="64.34"
-                y2="69.62"
-              />
-              <line
-                id="right_leg"
-                x1="32.34"
-                y1="74.62"
-                x2="54.34"
-                y2="119.62"
-              />
-              <line
-                id="left_leg"
-                x1="32.34"
-                y1="74.62"
-                x2="10.34"
-                y2="119.62"
-              />
+            <g className="hangmanSVG" transform="matrix(.95 0 0 .95 64 18)">
+              {showhangman[0] && <circle cx="35.83" cy="12.5" r="12" className="head" />}
+              {showhangman[1] && <motion.path variants={bodyVariants} initial="init" animate="anim" d="M32.34 24.62L32.34 70.62" className="body" />}
+              {showhangman[2] && <motion.path variants={bodyVariants} initial="init" animate="anim" d="M32.34 28.62L0.34 58.62" className="left_arm" />}
+              {showhangman[3] && <motion.path variants={bodyVariants} initial="init" animate="anim" d="M32.34 28.62L64.34 58.62" className="right_arm" />}
+              {showhangman[4] && <motion.path variants={bodyVariants} initial="init" animate="anim" d="M32.34 70.62L54.34 115.62" className="right_leg" />}
+              {showhangman[5] && <motion.path variants={bodyVariants} initial="init" animate="anim" d="M32.34 70.62L10.34 115.62" className="left_leg" />}
             </g>
+
 
             <g className="gallow">
               <line className="cls-1" x1="96" y1="17" x2="96" y2="1" />
@@ -145,6 +140,6 @@ export default function App() {
 
       <input type="text" maxLength="1" size="1" onChange={textBox_Handler} />
       <button onClick={() => guessSubmit_Handler(input)}>Your Guess</button>
-    </div>
+    </div >
   );
 }

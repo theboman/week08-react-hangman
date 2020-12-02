@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import "./styles.css";
 import { motion } from 'framer-motion';
 
+import Modal from './components/Modal';
+
 
 
 export default function App() {
@@ -21,6 +23,8 @@ export default function App() {
   const [currentCorrectLetters, setCurrentCorrectLetters] = useState([]); //will hold the correct gussed letters
   const [score, setScore] = useState(0);
   const [showhangman, setShowhangman] = useState([]); //show the different parts of the hangman SVG
+  const [modal, setModal] = useState(true);
+
 
   useEffect(() => {
 
@@ -29,13 +33,14 @@ export default function App() {
       return;
     }
     chooseWord(wordbank);
+    console.log("use effect called here!");
   }, [currentWord, wordbank]);
 
   //this will randomly chose a word from the word bank
-  function chooseWord(wordbank) {
+  function chooseWord(inputbank) {
     // random number from array length 
-    let randomNum = Math.floor(Math.random() * wordbank.length);
-    let tempWord = wordbank[randomNum];
+    let randomNum = Math.floor(Math.random() * inputbank.length);
+    let tempWord = inputbank[randomNum];
     let tempArray = tempWord.split("");
 
     setCurrentWord(tempWord);
@@ -52,9 +57,11 @@ export default function App() {
   }
 
   // handles the input
-  function textBox_Handler(e) {
-    console.log(e.target.value);
+  function input_Handler(e) {
+    //console.log(e.target.value);
     setInput(e.target.value);
+    // was missing 2 way binding
+
   }
 
   // button handler
@@ -80,6 +87,7 @@ export default function App() {
       let newHangArray = [...showhangman];
       newHangArray.push(current_guess);
       setShowhangman(newHangArray);
+      setModal(true);
 
     }
 
@@ -89,15 +97,23 @@ export default function App() {
     let newGuess = [...guessed];
     newGuess.push(current_guess);
     setGuessed(newGuess);
+    setInput("");
+    console.log('end of btn?')
   }
 
+  //framer-motion variants
   const bodyVariants = {
     init: { pathLength: 0 },
     anim: { pathLength: 1 }
   }
 
+  console.log(`This is input: ${input}`);
+  console.log(`This is guessed letters: ${guessed}`);
+
   return (
+
     <div className="App">
+      <Modal modal={modal} setModal={setModal} />
       <div className="game_box">
         <div className="game">
           hangman: {currentWord}
@@ -135,10 +151,10 @@ export default function App() {
             );
           })}
         </div>
-        <div className="guessed_letters">guessed letters: {guessed}</div>
+        <div className="guessed_letters">Guessed Letters:{guessed}</div>
       </div>
 
-      <input type="text" maxLength="1" size="1" onChange={textBox_Handler} />
+      <input type="text" maxLength="1" size="1" onChange={input_Handler} value={input} />
       <button onClick={() => guessSubmit_Handler(input)}>Your Guess</button>
     </div >
   );
